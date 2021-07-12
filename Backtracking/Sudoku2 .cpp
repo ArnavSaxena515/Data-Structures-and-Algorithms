@@ -1,0 +1,173 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define n 9
+bool findEmptyLocation(int grid[n][n], int &row, int &col)
+{
+    for(int i = 0; i < n; i ++)
+    {
+        for(int j = 0; j < n; j++)
+        {
+            if(grid[i][j] == 0)
+            {
+                row = i;
+                col = j;
+                return true;
+            }
+        }
+    }
+}
+bool isSafeInRow(int grid[n][n],int row, int num)
+{
+    for(int i = 0; i < n;i++)
+    {
+        if(grid[row][i] == num)
+        {
+            return false;
+        }
+    }
+    return true;
+}
+bool isSafeInColumn(int grid[n][n],int col, int num)
+{
+    for(int i = 0; i <n; i ++)
+    {
+        if(grid[i][col] == num)
+        {
+            return false;
+        }
+    }
+    return true;
+}
+bool isSafeInGrid(int grid[n][n], int row, int col, int num)
+{
+    int rowFactor = row - (row%3);
+    int colFactor = col - (col%3);
+    for(int i = 0; i < 3;i++)
+    {
+        for(int j = 0; j < 3; j ++)
+        {
+            if(grid[i+rowFactor][j +colFactor]==num)
+            {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+bool isSafe(int grid[n][n],int row,int col,int num)
+{
+    if(isSafeInRow(grid,row,num) && isSafeInColumn(grid,col,num) && isSafeInGrid(grid,row,col,num))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+bool solveSudoku(int grid[n][n])
+{
+    int row,col;
+    if(!findEmptyLocation(grid,row,col))
+    {
+        return true;
+    }
+    for(int i = 1; i <=n; i ++)
+    {
+        if (isSafe(grid,row,col,i))
+        {
+            grid[row][col] = i;
+            if(solveSudoku(grid))
+            {
+                return true;
+            }
+            grid[row][col] = 0;
+        }
+    }
+    return false;
+}
+int main()
+{
+    int grid[n][n];
+    for(int i = 0; i <9 ; i ++)
+    {
+        string s;
+        cin>>s;
+        for(int j = 0; j <s.length(); j++)
+        {
+            grid[i][j] = s[j] - '0';
+        }
+    }
+   bool check = solveSudoku(grid);
+    cout<<endl<<endl<<endl;
+    for(int i = 0; i < n ; i ++)
+    {
+        for(int j = 0; j < n ; j++)
+        {
+            if((j)%3 == 0 && j!=0)
+            {
+                cout<<"\t";
+            }
+            cout<<grid[i][j]<<" ";
+        }
+        if((i+1)%3==0)
+        {
+            cout<<endl;
+        }
+        cout<<endl;
+    }
+
+    if(check)
+    {
+        cout<<"true";
+    }
+    else
+    {
+        cout<<"false";
+    }
+
+
+
+}
+
+/*
+
+this one works
+
+
+
+023456789
+406789123
+780123456
+234067891
+567801234
+891230567
+345678012
+678912305
+912345670
+
+
+900020750
+600050040
+020400010
+208000000
+070509060
+000000401
+010005080
+090070004
+082040006
+
+
+305420810
+487901506
+029056374
+850793041
+613208957
+613208957
+074065280
+241309065
+508670192
+
+
+
+*/
